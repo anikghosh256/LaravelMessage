@@ -1,0 +1,25 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.user_img{
+  max-width: 220px;
+  overflow: hidden;
+  width: 80%;
+  margin: 0 auto;
+
+	img{
+	  width: 100%;
+	}
+
+}
+.user_action{
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
