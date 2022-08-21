@@ -36,19 +36,6 @@ class MessageController extends Controller
             $contactUnread = $unreadIds->where('sender_id', $contact->id)->first();
 
             $contact->unread = $contactUnread ? $contactUnread->messages_count : 0;
-
-            return $contact;
-        });
-
-
-        $lastMessages = $this->LastMessWithUser($contacts);
-
-        // add last  messages
-        $contacts = $contacts->map(function($contact) use ($lastMessages) {
-            $lastMess = $lastMessages->where('uid', $contact->id)->first();
-
-            $contact->lastMess = $lastMess ? $lastMess['lastMess'] : null;
-
             return $contact;
         });
 
@@ -84,46 +71,5 @@ class MessageController extends Controller
     	broadcast(new NewMessage($newMess));
 
     	return response()->json($newMess);
-    }
-
-
-
-    protected function LastMessWithUser($contacts){
-        $LastMessWithUser = collect();
-
-        foreach ($contacts as $contact) {
-            $lastMess;
-            //select last resseved message with contact id
-            $mess1= Message::where('to', $contact->id)->orderBy('id','desc')->first();
-            
-            //select last send message to mess1 user  
-            $mess2= Message::where('to', $mess1['from'])->where('from', $mess1['to'])->orderBy('id','desc')->first();
-          
-            if ($mess2)
-            {
-                if ($mess1['id'] > $mess2['id']) 
-                {
-                    $lastMess = $mess1->text;
-                }else{
-                    $lastMess = $mess2->text;
-                }
-                $LastMessWithUser[]= [
-                    'uid' => $contact->id,
-                    'lastMess' => $lastMess
-                ];
-
-            }else
-            {
-                $LastMessWithUser[]= [
-                    'uid' => $mess1['to'],
-                    'lastMess' => null
-                ];
-            }
-            
-
-            
-        }
-
-        return $LastMessWithUser;
     }
 }
